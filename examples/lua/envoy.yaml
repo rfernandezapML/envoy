@@ -27,6 +27,14 @@ static_resources:
             config:
               inline_code: |
                 function envoy_on_request(request_handle)
+                  headers = request_handle:headers() 
+                  path = headers:get(":path")
+
+                  if string.match(path, "console") then
+                    request_handle:respond(
+                        {[":status"] = "403"},
+                        "You shall not pass")
+                  end
                   request_handle:headers():add("foo", "bar")
                 end
                 function envoy_on_response(response_handle)
